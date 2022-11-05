@@ -1,0 +1,9 @@
+# Secrets: never commit these.
+config.php
+
+node_modules/
+*.zip
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
