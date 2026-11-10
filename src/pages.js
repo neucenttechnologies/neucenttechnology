@@ -311,6 +311,13 @@ ${cta()}`;
 			url: site.url + '/',
 			email: site.email || undefined,
 			telephone: site.phone || undefined,
+			location: site.hours ? [{
+				'@type': 'LocalBusiness',
+				name: `${site.name} Noida office`,
+				telephone: site.phone || undefined,
+				address: { '@type': 'PostalAddress', ...site.addressParts },
+				openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: site.hours.days, opens: site.hours.opens, closes: site.hours.closes }],
+			}] : undefined,
 			address: [
 				site.addressParts && { '@type': 'PostalAddress', ...site.addressParts },
 				site.tanzania && { '@type': 'PostalAddress', ...site.tanzania.addressParts },
@@ -542,6 +549,7 @@ function contact() {
 		site.phone && `<li>${icon('phone', 22)}<div><strong>Phone</strong><a href="tel:${esc(site.phone.replace(/[^0-9+]/g, ''))}">${esc(site.phone)}</a></div></li>`,
 		site.whatsapp && `<li>${icon('whatsapp', 22)}<div><strong>WhatsApp</strong><a href="https://wa.me/${esc(site.whatsapp)}" target="_blank" rel="noopener">Message us</a></div></li>`,
 		site.address && `<li>${icon('pin', 22)}<div><strong>${esc(site.addressLabel || 'Office')}</strong><span>${esc(site.address).replace(/\n/g, '<br>')}</span><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(site.address.replace(/\n/g, ' '))}" target="_blank" rel="noopener">Get directions</a></div></li>`,
+		site.hours && `<li>${icon('globe', 22)}<div><strong>Opening hours (Noida)</strong><span>${esc(site.hours.label)}</span></div></li>`,
 		site.tanzania && `<li>${icon('pin', 22)}<div><strong>${esc(site.tanzania.label)}</strong><span>${esc(site.tanzania.address).replace(/\n/g, '<br>')}</span><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(site.tanzania.address.replace(/\n/g, ' '))}" target="_blank" rel="noopener">Get directions</a></div></li>`,
 	].filter(Boolean).join('\n\t\t\t\t');
 

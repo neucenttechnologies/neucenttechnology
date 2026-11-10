@@ -23,6 +23,13 @@ module.exports = {
 		postalCode: '201309',
 		addressCountry: 'IN',
 	},
+	// Noida office opening hours (India Standard Time).
+	hours: {
+		label: 'Monday to Friday, 12 PM to 9 PM IST',
+		days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+		opens: '12:00',
+		closes: '21:00',
+	},
 	// Tanzania office.
 	tanzania: {
 		label: 'Tanzania office',

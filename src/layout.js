@@ -83,6 +83,7 @@ function footer() {
 		site.email && `<li>${icon('mail', 18)}<a href="mailto:${esc(site.email)}">${esc(site.email)}</a></li>`,
 		site.phone && `<li>${icon('phone', 18)}<a href="tel:${esc(site.phone.replace(/[^0-9+]/g, ''))}">${esc(site.phone)}</a></li>`,
 		site.address && `<li>${icon('pin', 18)}<span>${site.addressLabel ? `<strong>${esc(site.addressLabel)}</strong><br>` : ''}${esc(site.address).replace(/\n/g, '<br>')}</span></li>`,
+		site.hours && `<li>${icon('globe', 18)}<span><strong>Opening hours</strong><br>${esc(site.hours.label)}</span></li>`,
 		site.tanzania && `<li>${icon('pin', 18)}<span><strong>${esc(site.tanzania.label)}</strong><br>${esc(site.tanzania.address).replace(/\n/g, '<br>')}</span></li>`,
 	].filter(Boolean).join('');
 
