@@ -430,6 +430,12 @@ p { margin: 0 0 1em; }
 @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
 
 .footer-brand p { margin: 18px 0; max-width: 340px; font-size: 0.98rem; }
+.footer-brand p.footer-areas { margin-top: -6px; font-size: 0.88rem; opacity: 0.8; }
+.chips li a { color: inherit; text-decoration: none; }
+.chips li a:hover { text-decoration: underline; }
+.area-grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.area-card h3 { margin: 0 0 6px; }
+.area-card > p { margin: 0 0 14px; }
 .footer-title { margin: 0 0 16px; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); }
 .footer-links, .footer-contact, .social { list-style: none; margin: 0; padding: 0; }
 .footer-links li, .footer-contact li { margin-bottom: 10px; }

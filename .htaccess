@@ -4,6 +4,13 @@
 
 ErrorDocument 404 /404.html
 
+# One address for the site: send the bare domain to www so search engines see one version.
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteCond %{HTTP_HOST} ^neucenttechnologies\.com$ [NC]
+	RewriteRule ^(.*)$ https://www.neucenttechnologies.com/$1 [R=301,L]
+</IfModule>
+
 # Never serve settings, notes or source files.
 <FilesMatch "^(config\.php|config\.sample\.php|CLAUDE\.md|README\.md|\.gitignore)$">
 	<IfModule mod_authz_core.c>

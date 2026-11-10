@@ -86,7 +86,7 @@ function projectCard(p) {
 				<p class="case-kind">${esc(p.kind)}</p>
 				<p>${esc(p.summary)}</p>
 				${chips(p.tags)}
-				<a class="text-link" href="/our-work/#${esc(p.slug)}">Read the case study ${icon('arrow', 16)}</a>
+				<a class="text-link" href="/our-work/${esc(p.slug)}/">Read the case study ${icon('arrow', 16)}</a>
 			</article>`;
 }
 
@@ -130,7 +130,6 @@ function home() {
 	const body = `<section class="hero">
 	<div class="container hero-grid">
 		<div class="hero-copy">
-			<p class="eyebrow">Software development company</p>
 			<h1>Web, mobile and <span class="grad-text">AI software</span>, built to ship.</h1>
 			<p class="lead">Neucent Technologies designs and engineers web applications, mobile apps and AI-powered systems for teams that need dependable software, from the first prototype through to production.</p>
 			<div class="btn-row">
@@ -168,7 +167,7 @@ function home() {
 <section class="facts-strip" aria-label="About Neucent">
 	<div class="container facts-grid">
 		<div class="fact">${icon('rocket', 22)}<span><strong>Building since ${esc(site.founded)}</strong>Web, mobile and now AI products</span></div>
-		<div class="fact">${icon('globe', 22)}<span><strong>Clients across Africa, India and the USA</strong>Delivered remotely, on schedule</span></div>
+		<div class="fact">${icon('globe', 22)}<span><strong>Clients in Zimbabwe, Africa, India and the USA</strong>Delivered remotely, on schedule</span></div>
 		<div class="fact">${icon('users', 22)}<span><strong>Founders in India and the USA</strong>Working across time zones</span></div>
 	</div>
 </section>
@@ -250,6 +249,39 @@ function home() {
 	</div>
 </section>
 
+<section class="section" id="where-we-work">
+	<div class="container">
+		${sectionHead({ eyebrow: 'Where we work', title: 'Software development for India, Tanzania, Africa and the USA', text: 'We have offices in India and Tanzania and have delivered projects for clients in India, Zimbabwe, elsewhere in Africa and the USA. We work remotely and in person where it helps.' })}
+		<div class="area-grid">
+			<article class="card area-card" data-reveal>
+				<h3>Delhi region and Uttar Pradesh</h3>
+				<p>Web, app and AI development for businesses in and around Delhi, including Meerut and Bijnor.</p>
+				${chips([...site.serviceAreas.ncr, ...site.serviceAreas.up.slice(0, 2)])}
+			</article>
+			<article class="card area-card" data-reveal>
+				<h3>All of India</h3>
+				<p>Custom software, mobile apps and school management systems for startups, schools and businesses in every state.</p>
+				${chips(site.serviceAreas.india)}
+			</article>
+			<article class="card area-card" data-reveal>
+				<h3>Tanzania</h3>
+				<p>Our Tanzania office is in Arusha. Website, mobile app, AI and school software development for businesses across Tanzania.</p>
+				${chips(site.serviceAreas.tanzania)}
+			</article>
+			<article class="card area-card" data-reveal>
+				<h3>Zimbabwe and Africa</h3>
+				<p>Web platforms and apps built for clients in Zimbabwe and elsewhere in Africa, delivered remotely.</p>
+				${chips([...site.serviceAreas.zimbabwe, ...site.serviceAreas.africa.slice(2, 6)])}
+			</article>
+			<article class="card area-card" data-reveal>
+				<h3>United States</h3>
+				<p>Software, web and mobile development for US businesses, with a founder based in the USA for easy time-zone overlap.</p>
+				${chips(site.serviceAreas.usa)}
+			</article>
+		</div>
+	</div>
+</section>
+
 <section class="section">
 	<div class="container container-narrow">
 		${sectionHead({ eyebrow: 'Questions', title: 'Things people ask before we start' })}
@@ -261,18 +293,28 @@ ${cta()}`;
 
 	return {
 		path: '/',
-		title: 'Neucent Technologies | Web, mobile and AI software development',
-		description: 'Neucent Technologies designs and builds web applications, mobile apps and AI-powered software, from first prototype to production.',
+		title: 'Neucent Technologies | Web, Mobile & AI Software',
+		description: 'Neucent Technologies builds websites, mobile apps, AI chatbots and school software for clients in India, Africa, Tanzania and the USA.',
+		keywords: 'software development company Tanzania, software company Arusha, web development company Arusha, mobile app development Tanzania, app developers Dar es Salaam, website design Arusha, IT company Tanzania, AI chatbot Tanzania, software development company Zimbabwe, web development Zimbabwe, software company Harare, Indian software company for African clients, software development company Africa, outsourced software development India, offshore software development India for USA, software development company for US startups, IT outsourcing India,software development company in Noida, web development company Noida, mobile app development Delhi NCR, AI chatbot development India, website design Meerut, software company Bijnor, school management system India, custom software development India, web development Tanzania, mobile app development Tanzania, software company Dar es Salaam, hire developers India',
 		jsonld: {
 			'@context': 'https://schema.org',
-			'@type': 'Organization',
+			'@type': ['Organization', 'ProfessionalService'],
+			areaServed: [
+				{ '@type': 'Country', name: 'India' },
+				{ '@type': 'Country', name: 'Tanzania' },
+				...[...site.serviceAreas.ncr, ...site.serviceAreas.up.slice(0, 2)].map((n) => ({ '@type': 'City', name: n })),
+			],
+			knowsAbout: ['Web development', 'Mobile app development', 'AI chatbot development', 'School management software', 'Cloud and DevOps'],
 			name: site.name,
 			legalName: site.legalName,
 			foundingDate: site.founded,
 			url: site.url + '/',
 			email: site.email || undefined,
 			telephone: site.phone || undefined,
-			address: site.addressParts ? { '@type': 'PostalAddress', ...site.addressParts } : undefined,
+			address: [
+				site.addressParts && { '@type': 'PostalAddress', ...site.addressParts },
+				site.tanzania && { '@type': 'PostalAddress', ...site.tanzania.addressParts },
+			].filter(Boolean),
 			sameAs: site.linkedin ? [site.linkedin] : undefined,
 		},
 		body,
@@ -339,8 +381,9 @@ ${cta()}`;
 
 	return {
 		path: '/services/',
-		title: 'Services | Neucent Technologies',
-		description: 'Web application development, mobile apps, AI and machine learning, cloud and DevOps, UI/UX design and QA from one engineering team.',
+		title: 'Web, Mobile App & AI Development Services | Neucent',
+		description: 'Web and mobile app development, AI chatbots, cloud and DevOps, UI/UX design and testing for clients in India, Africa, Tanzania and the USA.',
+		keywords: 'web development services Tanzania, website development Arusha, mobile app development Arusha, app development Dar es Salaam, web development services India, mobile app development company Noida, website development Meerut, app development Bijnor, AI development services India, DevOps services India, UI UX design company Delhi NCR, software development Tanzania, website design Tanzania, hire dedicated developers India',
 		body,
 	};
 }
@@ -400,8 +443,9 @@ ${cta({ title: 'Not sure where AI fits?', text: 'Describe the task that slows yo
 
 	return {
 		path: '/ai-solutions/',
-		title: 'AI Solutions | Neucent Technologies',
-		description: 'AI assistants, knowledge search, document AI, workflow automation and predictive models, built into your web and mobile products with proper testing and safeguards.',
+		title: 'AI Solutions: Chatbots & Automation | Neucent',
+		description: 'AI assistants, chatbots, voicebots, document AI and workflow automation built into your web and mobile products, with proper testing.',
+		keywords: 'AI chatbot development India, AI development company Noida, voicebot development India, AI automation Delhi NCR, generative AI solutions India, AI chatbot Tanzania, machine learning company India',
 		body,
 	};
 }
@@ -435,7 +479,7 @@ function about() {
 
 <section class="section section-mist">
 	<div class="container">
-		${sectionHead({ eyebrow: 'Our story', title: 'From two people to clients across Africa and the USA' })}
+		${sectionHead({ eyebrow: 'Our story', title: 'From two people to clients across Africa, India and the USA' })}
 		${timelineList()}
 	</div>
 </section>
@@ -479,8 +523,9 @@ ${cta()}`;
 
 	return {
 		path: '/about-us/',
-		title: 'About | Neucent Technologies',
-		description: 'Neucent Technologies is a software development company building web applications, mobile apps and AI-powered products.',
+		title: 'About Neucent Technologies | Software Company',
+		description: 'Neucent Technologies is a software company with projects delivered in India, Zimbabwe, Africa and the USA, building web, mobile and AI products.',
+		keywords: 'Neucent Technologies, software company Arusha, software company Tanzania, software company Noida, IT company Delhi NCR, software company India, software development Tanzania',
 		body,
 	};
 }
@@ -497,6 +542,7 @@ function contact() {
 		site.phone && `<li>${icon('phone', 22)}<div><strong>Phone</strong><a href="tel:${esc(site.phone.replace(/[^0-9+]/g, ''))}">${esc(site.phone)}</a></div></li>`,
 		site.whatsapp && `<li>${icon('whatsapp', 22)}<div><strong>WhatsApp</strong><a href="https://wa.me/${esc(site.whatsapp)}" target="_blank" rel="noopener">Message us</a></div></li>`,
 		site.address && `<li>${icon('pin', 22)}<div><strong>${esc(site.addressLabel || 'Office')}</strong><span>${esc(site.address).replace(/\n/g, '<br>')}</span><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(site.address.replace(/\n/g, ' '))}" target="_blank" rel="noopener">Get directions</a></div></li>`,
+		site.tanzania && `<li>${icon('pin', 22)}<div><strong>${esc(site.tanzania.label)}</strong><span>${esc(site.tanzania.address).replace(/\n/g, '<br>')}</span><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(site.tanzania.address.replace(/\n/g, ' '))}" target="_blank" rel="noopener">Get directions</a></div></li>`,
 	].filter(Boolean).join('\n\t\t\t\t');
 
 	const body = `${pageHero({ eyebrow: 'Contact', title: 'Tell us what you want to build', lead: 'Share a few details and we will get back to you with questions, ideas and a suggested next step.' })}
@@ -531,11 +577,19 @@ function contact() {
 					</div>
 				</div>
 
-				<div class="field">
-					<label for="cf-budget">Approximate budget</label>
-					<select id="cf-budget" name="budget">
-						${options(c.formBudgets, 'unsure')}
-					</select>
+				<div class="field-row">
+					<div class="field">
+						<label for="cf-budget">Approximate budget</label>
+						<select id="cf-budget" name="budget">
+							${options(c.formBudgets, 'unsure')}
+						</select>
+					</div>
+					<div class="field">
+						<label for="cf-timeline">When do you want to start?</label>
+						<select id="cf-timeline" name="timeline">
+							${options(c.formTimelines, 'flexible')}
+						</select>
+					</div>
 				</div>
 
 				<div class="field">
@@ -573,25 +627,26 @@ function contact() {
 
 	return {
 		path: '/contact-us/',
-		title: 'Contact | Neucent Technologies',
-		description: 'Tell Neucent Technologies about your web, mobile or AI project and get a reply with questions, ideas and next steps.',
+		title: 'Contact Neucent Technologies | Start Your Project',
+		description: 'Contact Neucent Technologies for web, mobile app, AI and school software projects. Call or WhatsApp +91 82879 39308 from anywhere.',
+		keywords: 'software company Arusha contact, IT company Arusha Tanzania, hire app developer Tanzania, contact software company Noida, hire app developer Delhi NCR, website developer Meerut, app developer Bijnor, software developer Tanzania',
 		body,
 	};
 }
 
 /* ---- Our work ----------------------------------------------------------- */
 
-function work() {
-	const studies = c.projects.map((p) => {
+function caseSection(p, standalone = false) {
 		const testimonial = c.testimonials.find((t) => t.project === p.slug);
-		return `<section class="section${c.projects.indexOf(p) % 2 ? ' section-mist' : ''}" id="${esc(p.slug)}">
+		return `<section class="section${!standalone && c.projects.indexOf(p) % 2 ? ' section-mist' : ''}" id="${esc(p.slug)}">
 	<div class="container">
 		<div class="case-head" data-reveal>
 			<p class="eyebrow">Case study</p>
 			<h2>${esc(p.name)}</h2>
 			<p class="case-kind">${esc(p.kind)}</p>
 			${chips(p.tags)}
-			${p.url ? `<p class="case-visit"><a class="text-link" href="${esc(p.url)}" target="_blank" rel="noopener">Visit ${esc(p.url.replace(/^https?:\/\/(www\.)?/, ''))} ${icon('arrow', 16)}</a></p>` : ''}
+			${standalone ? '' : `<p class="case-visit"><a class="text-link" href="/our-work/${esc(p.slug)}/">Open this case study on its own page ${icon('arrow', 16)}</a></p>`}
+			${[p.url, ...(p.urls || [])].filter(Boolean).map((u) => `<p class="case-visit"><a class="text-link" href="${esc(u)}" target="_blank" rel="noopener">Visit ${esc(u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))} ${icon('arrow', 16)}</a></p>`).join('\n\t\t\t')}
 			${p.page ? `<p class="case-visit"><a class="text-link" href="${esc(p.page)}">See how our school management system works ${icon('arrow', 16)}</a></p>` : ''}
 		</div>
 		${p.image ? `<figure class="browser-shot" data-reveal>
@@ -615,7 +670,32 @@ function work() {
 		${testimonial ? `<div class="case-quote">${quoteCard(testimonial)}</div>` : ''}
 	</div>
 </section>`;
-	}).join('\n\n');
+}
+
+/** One page per case study, at /our-work/<slug>/. */
+function caseStudyPages() {
+	return c.projects.map((p) => ({
+		path: `/our-work/${p.slug}/`,
+		title: `${p.name} Case Study | Neucent`,
+		description: p.metaDescription || p.summary,
+		keywords: `${p.name}, ${p.kind}, ${p.tags.join(', ')}, Neucent Technologies case study`,
+		jsonld: {
+			'@context': 'https://schema.org',
+			'@type': 'CreativeWork',
+			name: p.name,
+			description: p.summary,
+			creator: { '@type': 'Organization', name: site.name, url: site.url + '/' },
+			url: `${site.url}/our-work/${p.slug}/`,
+		},
+		body: `${pageHero({ eyebrow: 'Case study', title: p.name, lead: p.summary })}
+${caseSection(p, true)}
+${cta({ title: 'Have a project like this?', text: 'Tell us about your idea. We will reply with questions, ideas and a suggested first step.' })}
+<section class="section"><div class="container"><p><a class="text-link" href="/our-work/">All our work ${icon('arrow', 16)}</a></p></div></section>`,
+	}));
+}
+
+function work() {
+	const studies = c.projects.map((p) => caseSection(p)).join('\n\n');
 
 	// Case studies alternate white / grey starting with white; the sections after them continue the pattern.
 	const moreTone = c.projects.length % 2 ? ' section-mist' : '';
@@ -626,7 +706,7 @@ function work() {
 				${p.focus ? `<span class="tile-tag">${esc(p.focus)}</span>` : ''}
 			</li>`).join('\n\t\t\t');
 
-	const body = `${pageHero({ eyebrow: 'Our work', title: 'Products we have built with clients', lead: 'Real projects for real teams, from a family-history platform and an NGO website to a school management system.' })}
+	const body = `${pageHero({ eyebrow: 'Our work', title: 'Products we have built with clients', lead: 'Real projects for real teams: a family-history platform for Zimbabwe and Africa, an NGO website and a school management system in India, and healthcare and telecom software for clients in the USA.' })}
 
 ${studies}
 
@@ -650,8 +730,9 @@ ${cta({ title: 'Have a project like this?', text: 'Tell us about your idea. We w
 
 	return {
 		path: '/our-work/',
-		title: 'Our Work | Neucent Technologies',
-		description: 'Projects Neucent Technologies has built with clients, including a family history platform, an NGO website and a school website with a student and teacher management system.',
+		keywords: 'software development portfolio India, website projects Bijnor, NGO website development, school website Uttar Pradesh, case studies web development India',
+		title: 'Our Work | Web, App & School Software | Neucent',
+		description: 'Projects built with clients: a family-history platform, an NGO website and a school website with a student and teacher management system.',
 		body,
 	};
 }
@@ -723,8 +804,9 @@ ${cta({ title: 'Want a system like this for your school?', text: 'Tell us about 
 
 	return {
 		path: '/school-management-system/',
-		title: 'School Management System | Neucent Technologies',
-		description: 'A school website with a student and teacher management system covering admissions, attendance, fees, staff records, timetables, notices and SMS or WhatsApp alerts.',
+		title: 'School Management System & Website | Neucent',
+		description: 'School management software and website: admissions, attendance, fees, staff, timetables, notices and SMS or WhatsApp alerts.',
+		keywords: 'school management system India, school ERP software, school software Bijnor, school management software Meerut, school website development Uttar Pradesh, college management software, school management system Tanzania, fee management software, attendance software for schools',
 		body,
 	};
 }
@@ -771,14 +853,14 @@ function privacy() {
 			<p>If we change how this website handles personal information, we will update this page. Last updated: November 2026.</p>
 
 			<h2>Contact</h2>
-			<p>${esc(site.legalName)}<br>${esc(site.address).replace(/\n/g, '<br>')}<br>Email: <a href="mailto:${esc(site.email)}">${esc(site.email)}</a><br>Phone: ${esc(site.phone)}</p>
+			<p>${esc(site.legalName)}<br>${esc(site.address).replace(/\n/g, '<br>')}<br>Email: <a href="mailto:${esc(site.email)}">${esc(site.email)}</a><br>Phone: ${esc(site.phone)}${site.tanzania ? `<br>${esc(site.tanzania.label)}: ${esc(site.tanzania.address).replace(/\n/g, ' ')}` : ''}</p>
 		</div>
 	</div>
 </section>`;
 
 	return {
 		path: '/privacy-policy/',
-		title: 'Privacy policy | Neucent Technologies',
+		title: 'Privacy Policy | Neucent Technologies',
 		description: 'How Neucent Technologies handles the information you send through this website: what we collect, how we use it and your choices.',
 		body,
 	};
@@ -806,4 +888,4 @@ function notFound() {
 	};
 }
 
-module.exports = { home, services, ai, work, school, about, contact, privacy, notFound };
+module.exports = { home, services, ai, work, school, about, contact, privacy, notFound, caseStudyPages };

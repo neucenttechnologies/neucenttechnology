@@ -34,6 +34,7 @@ const NAV = [
 	{ href: '/services/', label: 'Services' },
 	{ href: '/ai-solutions/', label: 'AI Solutions' },
 	{ href: '/our-work/', label: 'Our Work' },
+	{ href: '/blog/', label: 'Blog' },
 	{ href: '/about-us/', label: 'About' },
 ];
 
@@ -73,12 +74,16 @@ function footer() {
 		.map((s) => `<li><a href="/services/#${esc(s.slug)}">${esc(s.title)}</a></li>`)
 		.join('');
 
-	const companyLinks = FOOTER_NAV.map((n) => `<li><a href="${n.href}">${esc(n.label)}</a></li>`).join('');
+	const companyLinks = [
+		...FOOTER_NAV,
+		...require('./landing-data').pages.map((l) => ({ href: `/${l.slug}/`, label: l.nav === 'India' || l.nav === 'USA' || l.nav === 'Tanzania' || l.nav === 'Zimbabwe' ? `Software in ${l.nav}` : l.nav })),
+	].map((n) => `<li><a href="${n.href}">${esc(n.label)}</a></li>`).join('');
 
 	const contact = [
 		site.email && `<li>${icon('mail', 18)}<a href="mailto:${esc(site.email)}">${esc(site.email)}</a></li>`,
 		site.phone && `<li>${icon('phone', 18)}<a href="tel:${esc(site.phone.replace(/[^0-9+]/g, ''))}">${esc(site.phone)}</a></li>`,
 		site.address && `<li>${icon('pin', 18)}<span>${site.addressLabel ? `<strong>${esc(site.addressLabel)}</strong><br>` : ''}${esc(site.address).replace(/\n/g, '<br>')}</span></li>`,
+		site.tanzania && `<li>${icon('pin', 18)}<span><strong>${esc(site.tanzania.label)}</strong><br>${esc(site.tanzania.address).replace(/\n/g, '<br>')}</span></li>`,
 	].filter(Boolean).join('');
 
 	return `<footer class="site-footer">
@@ -86,6 +91,7 @@ function footer() {
 		<div class="footer-brand">
 			${brand()}
 			<p>We design and build web applications, mobile apps and AI-powered software for teams that want to move faster.</p>
+				<p class="footer-areas">Software development for clients across India, Zimbabwe, Africa, Tanzania and the USA.</p>
 			${socials ? `<ul class="social" aria-label="Social profiles">${socials}</ul>` : ''}
 		</div>
 		<div>
@@ -134,6 +140,8 @@ function render(page) {
 	<meta name="theme-color" content="#0a0e1a">
 	<title>${esc(page.title)}</title>
 	<meta name="description" content="${esc(page.description)}">
+${page.keywords ? `\t<meta name="keywords" content="${esc(page.keywords)}">\n` : ''}	<meta name="geo.region" content="IN-UP">
+	<meta name="geo.placename" content="Noida, Delhi NCR, India">
 ${page.noindex ? '\t<meta name="robots" content="noindex">\n' : ''}	<link rel="canonical" href="${esc(url)}">
 	<meta property="og:type" content="website">
 	<meta property="og:site_name" content="${esc(site.name)}">

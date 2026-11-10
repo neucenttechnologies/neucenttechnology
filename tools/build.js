@@ -32,7 +32,11 @@ function outputPath(urlPath) {
 	return urlPath.slice(1);
 }
 
-const built = [pages.home(), pages.services(), pages.ai(), pages.work(), pages.school(), pages.about(), pages.contact(), pages.privacy(), pages.notFound()];
+const { landingPages } = require('../src/landing');
+
+const { blogPages } = require('../src/blog');
+
+const built = [pages.home(), pages.services(), pages.ai(), pages.work(), ...pages.caseStudyPages(), pages.school(), ...landingPages(), ...blogPages(), pages.about(), pages.contact(), pages.privacy(), pages.notFound()];
 
 for (const page of built) {
 	write(outputPath(page.path), render(page));

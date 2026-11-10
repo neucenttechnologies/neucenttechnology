@@ -17,6 +17,7 @@ declare(strict_types=1);
 // Keep the option keys in step with formServices / formBudgets in src/content.js.
 const NT_SERVICES = ['web', 'mobile', 'ai', 'cloud', 'iot', 'school', 'design', 'hire', 'other'];
 const NT_BUDGETS  = ['under-5k', '5k-15k', '15k-50k', '50k-plus', 'unsure'];
+const NT_TIMELINES = ['asap', '1-3m', '3-6m', 'flexible']; // keep in step with formTimelines in src/content.js
 
 const NT_MAX_PER_HOUR = 5;   // submissions allowed per visitor address per hour
 const NT_MIN_FILL_MS  = 1500; // faster than this after page load looks like a bot
@@ -99,17 +100,17 @@ function nt_store(array $config, array $row): bool
 		if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {
 			$pdo->exec('CREATE TABLE IF NOT EXISTS website_enquiries (
 				id INTEGER PRIMARY KEY AUTOINCREMENT, created_at TEXT NOT NULL, name TEXT NOT NULL,
-				email TEXT NOT NULL, phone TEXT NOT NULL, service TEXT NOT NULL, budget TEXT NOT NULL, message TEXT NOT NULL)');
+				email TEXT NOT NULL, phone TEXT NOT NULL, service TEXT NOT NULL, budget TEXT NOT NULL, timeline TEXT NOT NULL DEFAULT \'\', message TEXT NOT NULL)');
 		} else {
 			$pdo->exec("CREATE TABLE IF NOT EXISTS website_enquiries (
 				id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, created_at DATETIME NOT NULL, name VARCHAR(100) NOT NULL,
 				email VARCHAR(120) NOT NULL, phone VARCHAR(30) NOT NULL DEFAULT '', service VARCHAR(20) NOT NULL,
-				budget VARCHAR(20) NOT NULL, message TEXT NOT NULL) DEFAULT CHARSET=utf8mb4");
+				budget VARCHAR(20) NOT NULL, timeline VARCHAR(20) NOT NULL DEFAULT '', message TEXT NOT NULL) DEFAULT CHARSET=utf8mb4");
 		}
 
-		$stmt = $pdo->prepare('INSERT INTO website_enquiries (created_at, name, email, phone, service, budget, message) VALUES (?, ?, ?, ?, ?, ?, ?)');
+		$stmt = $pdo->prepare('INSERT INTO website_enquiries (created_at, name, email, phone, service, budget, timeline, message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 		return $stmt->execute([
-			gmdate('Y-m-d H:i:s'), $row['name'], $row['email'], $row['phone'], $row['service'], $row['budget'], $row['message'],
+			gmdate('Y-m-d H:i:s'), $row['name'], $row['email'], $row['phone'], $row['service'], $row['budget'], $row['timeline'], $row['message'],
 		]);
 	} catch (Throwable $e) {
 		error_log('[neucent-contact] database: ' . $e->getMessage());
@@ -144,6 +145,8 @@ function nt_mail(array $config, array $row): bool
 	];
 	$service = $services[$row['service']] ?? 'Something else';
 	$budget = $budgets[$row['budget']] ?? 'Not sure yet';
+	$timelines = ['asap' => 'As soon as possible', '1-3m' => 'Within 1 to 3 months', '3-6m' => 'In 3 to 6 months', 'flexible' => 'Just exploring'];
+	$timeline = $timelines[$row['timeline']] ?? 'Just exploring';
 	$phone = $row['phone'] !== '' ? $row['phone'] : 'Not given';
 	$when = (new DateTime('now', new DateTimeZone('Asia/Kolkata')))->format('d M Y, h:i A') . ' IST';
 
@@ -154,6 +157,7 @@ function nt_mail(array $config, array $row): bool
 		. 'Phone:         ' . $phone . "\n"
 		. 'Interested in: ' . $service . "\n"
 		. 'Budget:        ' . $budget . "\n"
+		. 'Start:         ' . $timeline . "\n"
 		. 'Received:      ' . $when . "\n\n"
 		. "MESSAGE\n-------\n" . $row['message'] . "\n\n"
 		. "Reply to this email to answer the customer directly.\n";
@@ -174,6 +178,7 @@ function nt_mail(array $config, array $row): bool
 		. $line('Phone', $row['phone'] !== '' ? '<a href="tel:' . $h(preg_replace('/[^0-9+]/', '', $row['phone']) ?? '') . '" style="color:#0b5fff">' . $h($row['phone']) . '</a>' : 'Not given')
 		. $line('Interested in', $h($service))
 		. $line('Budget', $h($budget))
+		. $line('Wants to start', $h($timeline))
 		. $line('Received', $h($when))
 		. '</table>'
 		. '<div style="margin:18px 12px 6px;font-size:12px;color:#667085;text-transform:uppercase;letter-spacing:1px">Message</div>'
@@ -182,7 +187,7 @@ function nt_mail(array $config, array $row): bool
 		. '</div></div></body></html>';
 
 	// Subject: easy to spot and filter. Built only from validated values with no line breaks.
-	$subject = mb_encode_mimeheader('[Website Enquiry] ' . $service . ' - ' . $row['name'] . ' (' . $budget . ')', 'UTF-8');
+	$subject = mb_encode_mimeheader('[Website Enquiry] ' . $service . ' - ' . $row['name'] . ' (' . $budget . ', ' . $timeline . ')', 'UTF-8');
 
 	$boundary = 'nt_' . bin2hex(random_bytes(8));
 	$body = "--$boundary\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n"
@@ -231,11 +236,13 @@ $row = [
 	'phone'   => nt_clean(preg_replace('/[^0-9+()\-\s.]/', '', (string) ($_POST['phone'] ?? '')) ?? '', 30),
 	'service' => (string) ($_POST['service'] ?? ''),
 	'budget'  => (string) ($_POST['budget'] ?? ''),
+	'timeline' => (string) ($_POST['timeline'] ?? ''),
 	'message' => nt_clean((string) ($_POST['message'] ?? ''), 5000, true),
 ];
 
 $row['service'] = in_array($row['service'], NT_SERVICES, true) ? $row['service'] : 'other';
 $row['budget']  = in_array($row['budget'], NT_BUDGETS, true) ? $row['budget'] : 'unsure';
+$row['timeline'] = in_array($row['timeline'], NT_TIMELINES, true) ? $row['timeline'] : 'flexible';
 
 if ($row['name'] === '' || !filter_var($row['email'], FILTER_VALIDATE_EMAIL) || mb_strlen($row['message']) < 10) {
 	nt_redirect(['error' => 'invalid']);

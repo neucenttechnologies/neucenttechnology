@@ -138,6 +138,7 @@ const stack = {
 /** Industries the old site named, plus the platforms described in our history. */
 const industries = [
 	'Healthcare and fitness',
+	'Telecom and communications',
 	'Education and e-learning',
 	'HR and workforce (HRMS)',
 	'Banking and finance',
@@ -175,7 +176,8 @@ const engagementModels = [
 /** Company history, from the About page of the old site. */
 const timeline = [
 	{ year: '2020', title: 'Neucent begins', text: 'We start as a two-person company: one founder in the USA and one in India, building web and mobile products for early clients.' },
-	{ year: '2023', title: 'Growing across continents', text: 'Customers in Africa and the USA join us, and the work expands into products such as a healthcare platform and a social platform.' },
+	{ year: '2023', title: 'Growing across continents', text: 'Customers in Zimbabwe, the rest of Africa and the USA join us, and the work expands into products such as a family-history platform, healthcare and telecom software for US clients, and a social platform.' },
+	{ year: 'In India', title: 'Rooted in India too', text: 'From our Noida office we build for Indian clients as well, including a welfare society in Bijnor and a school with its own management system, and we are growing our work in India, Africa and the USA.' },
 	{ year: 'Today', title: 'Built around AI', text: 'We combine web, mobile and cloud engineering with AI features such as chatbots, voicebots and automation.' },
 ];
 
@@ -186,6 +188,7 @@ const projects = [
 		name: 'ZimTribes and Afrikatribes',
 		kind: 'Family history and heritage platform',
 		tags: ['Web platform', 'Agile delivery', 'DevOps'],
+		urls: ['https://www.zimtribes.com/', 'https://tribes.africa/'],
 		summary: 'An online home for family history, where families record their lineage and discover how they are connected to the people around them.',
 		image: {
 			src: '/assets/img/work/zimtribes-1600.webp',
@@ -247,6 +250,7 @@ const projects = [
 		kind: 'School website with student and teacher management',
 		tags: ['School website', 'Student and teacher management', 'Notices and alerts'],
 		page: '/school-management-system/',
+		metaDescription: 'A website and management system for an inter college in Nehtaur, Bijnor: students, teachers, fees and notices in one place.',
 		summary: 'A public website and a management system for an inter college in Nehtaur, Bijnor, so the school can present itself online and run its students, teachers, fees and notices from one place.',
 		image: {
 			src: '/assets/img/work/jvmic-1600.webp',
@@ -339,6 +343,9 @@ const faqs = [
 	{ q: 'How long does a project take and what does it cost?', a: 'It depends on scope. A focused prototype can take a few weeks, while a full product takes months. After a short discovery call we share a plan with timelines and a price range you can review before committing.' },
 	{ q: 'Can you add AI to an application we already have?', a: 'Yes. Most AI work we do is adding one specific capability, such as a chatbot, search, summaries or document reading, to an existing web or mobile product through its current backend.' },
 	{ q: 'Will you work with our existing codebase or team?', a: 'Yes. We can take over a codebase, extend it, or work alongside your developers. We begin with a review so estimates are based on what is really there.' },
+	{ q: 'Do you work with businesses in India?', a: 'Yes. We build software for businesses across India, including Delhi and the NCR and Uttar Pradesh towns such as Meerut and Bijnor. We can meet in person or work over video calls, whichever suits you.' },
+	{ q: 'Do you have an office in Tanzania?', a: 'Yes. Our Tanzania office is at Saba Saba Apartment, Gran Melia, Arusha. We build websites, mobile apps, AI tools and school software for businesses in Arusha, Dar es Salaam, Dodoma, Mwanza, Zanzibar and across Tanzania.' },
+	{ q: 'Do you build software for clients in Zimbabwe, Africa, Tanzania and the USA?', a: 'Yes. We have delivered projects for clients in India, Zimbabwe, elsewhere in Africa and the USA, and we also work with businesses in Tanzania, including Dar es Salaam, Dodoma, Arusha and Zanzibar. Projects run over video calls, WhatsApp and shared task boards, so location is not a barrier.' },
 	{ q: 'Can we hire developers for a specific role?', a: 'Yes. You can bring in Android, iOS, React, Node.js, PHP, WordPress or DevOps engineers on a dedicated basis and manage the work alongside your own team.' },
 	{ q: 'Who owns the code and the designs?', a: 'You do. Source code, design files and cloud accounts are set up in your name and handed over with documentation.' },
 	{ q: 'How do you handle sensitive data in AI projects?', a: 'We agree on data handling before any work starts. Depending on your requirements we can use hosted models with suitable terms or deploy inside your own cloud account.' },
@@ -366,7 +373,15 @@ const formBudgets = {
 	unsure: 'Not sure yet',
 };
 
+const formTimelines = {
+	asap: 'As soon as possible',
+	'1-3m': 'Within 1 to 3 months',
+	'3-6m': 'In 3 to 6 months',
+	flexible: 'Just exploring',
+};
+
 module.exports = {
+	formTimelines,
 	services, aiCapabilities, aiSteps, aiPrinciples, process, stack, industries, hireRoles,
 	principles, engagementModels, timeline, projects, otherProjects, testimonials, faqs, formServices, formBudgets,
 	schoolGroups, schoolWebsite,

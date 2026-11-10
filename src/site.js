@@ -23,6 +23,26 @@ module.exports = {
 		postalCode: '201309',
 		addressCountry: 'IN',
 	},
+	// Tanzania office.
+	tanzania: {
+		label: 'Tanzania office',
+		address: 'Saba Saba Apartment, Gran Melia,\nArusha, Tanzania',
+		addressParts: {
+			streetAddress: 'Saba Saba Apartment, Gran Melia',
+			addressLocality: 'Arusha',
+			addressCountry: 'TZ',
+		},
+	},
+	// Places we want to be found for. Used in page text, search-engine data and the footer.
+	serviceAreas: {
+		ncr: ['Noida', 'Greater Noida', 'Delhi', 'New Delhi', 'Gurugram', 'Ghaziabad', 'Faridabad'],
+		up: ['Meerut', 'Bijnor', 'Lucknow', 'Moradabad', 'Muzaffarnagar', 'Saharanpur', 'Dehradun'],
+		india: ['Mumbai', 'Bengaluru', 'Hyderabad', 'Pune', 'Chennai', 'Kolkata', 'Jaipur', 'Ahmedabad', 'Chandigarh', 'Indore'],
+		zimbabwe: ['Harare', 'Bulawayo', 'Mutare', 'Gweru', 'Victoria Falls'],
+		africa: ['Zimbabwe', 'Tanzania', 'Kenya', 'South Africa', 'Zambia', 'Nigeria', 'Uganda', 'Ghana'],
+		usa: ['New York', 'California', 'Texas', 'Florida', 'Illinois', 'Washington'],
+		tanzania: ['Dar es Salaam', 'Dodoma', 'Arusha', 'Mwanza', 'Zanzibar', 'Mbeya', 'Moshi'],
+	},
 	// Image shown when a page link is shared on LinkedIn, Facebook, WhatsApp, etc. (1200x630).
 	ogImage: '/assets/img/og-share.jpg',
 	ogImageWidth: 1200,
